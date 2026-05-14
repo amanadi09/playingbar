@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 const Games = () => {
+  const carouselRef = useRef(null);
   const games = [
     { title: 'VBlink', tag: 'Slots', desc: 'Battle through cybernetic strongholds.', img: '/games/vblink.png' },
     { title: 'Ultra Panda', tag: 'Fishing', desc: 'Slide through neon streets at extreme speed.', img: '/games/ultrapanda.png' },
@@ -21,15 +22,43 @@ const Games = () => {
   ];
 
   return (
-    <section id="games" className="py-24 bg-slate-950">
+    <section id="games" className="py-16 md:py-24 bg-slate-950">
       <div className="container mx-auto px-6">
         <div className="mb-12 text-center">
-          <p className="text-sm uppercase tracking-[0.36em] text-cyan-400/80">Featured collection</p>
-          <h2 className="mt-3 text-4xl font-bold text-white">14 Epic Game Experiences</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-400">See the latest batch of high-energy games designed for serious players and fast competition.</p>
+          <p className="text-xs md:text-sm uppercase tracking-[0.36em] text-cyan-400/80">Featured collection</p>
+          <h2 className="mt-3 text-3xl md:text-4xl font-bold text-white">Epic Game Experiences</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm md:text-base text-slate-400">High-energy games designed for serious players and fast competition.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+        {/* Mobile: Horizontal Scroll Carousel */}
+        <div className="relative block md:hidden pb-4">
+          <button onClick={() => carouselRef.current?.scrollBy({ left: -280, behavior: 'smooth' })} className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-700/60 bg-slate-950/90 text-cyan-300 shadow-[0_0_20px_rgba(56,189,248,0.25)] transition hover:bg-slate-900/95">
+            ‹
+          </button>
+          <button onClick={() => carouselRef.current?.scrollBy({ left: 280, behavior: 'smooth' })} className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-700/60 bg-slate-950/90 text-cyan-300 shadow-[0_0_20px_rgba(56,189,248,0.25)] transition hover:bg-slate-900/95">
+            ›
+          </button>
+          <div ref={carouselRef} className="overflow-x-auto scrollbar-hide scroll-smooth px-3 py-2">
+            <div className="flex gap-4 pb-2">
+              {games.map((game, index) => (
+                <div key={index} className="flex-shrink-0 min-w-[17rem] group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl shadow-slate-950/40 transition-transform duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  <img src={game.img} alt={game.title} className="h-40 w-full object-cover" />
+                  <div className="p-4 relative">
+                    <span className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-xs uppercase tracking-[0.2em] text-cyan-300">{game.tag}</span>
+                    <h3 className="mt-3 text-lg font-semibold text-white truncate">{game.title}</h3>
+                    <p className="mt-2 text-xs text-slate-400 line-clamp-2">{game.desc}</p>
+                    <button className="mt-4 w-full rounded-full bg-cyan-500 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-950 transition hover:bg-cyan-400">Play Now</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="mt-3 text-center text-xs text-slate-400">👉 Use the arrows to browse cards</p>
+        </div>
+
+        {/* Desktop: Grid */}
+        <div className="hidden md:grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
           {games.map((game, index) => (
             <div key={index} className="group relative overflow-hidden rounded-[2rem] border border-slate-800 bg-slate-900/90 shadow-2xl shadow-slate-950/40 transition-transform duration-300 hover:-translate-y-2">
               <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />

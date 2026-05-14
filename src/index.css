@@ -6,6 +6,7 @@ body {
   font-family: 'Inter', sans-serif;
   background: #020617;
   color: #e2e8f0;
+  overflow-x: hidden;
 }
 
 * {
@@ -74,4 +75,14 @@ img {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Hide scrollbar while keeping functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
