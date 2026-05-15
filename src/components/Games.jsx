@@ -21,6 +21,18 @@ const Games = () => {
     { title: 'Riversweeps', tag: 'Strategy', desc: 'Control the flow in a river of endless battles.', img: '/games/riversweeps.png' },
   ];
 
+  const openTawkGameChat = (gameTitle) => {
+    if (typeof window === 'undefined') return;
+
+    window.__pendingTawkGame = gameTitle;
+
+    if (window.openTawkGameChat) {
+      window.openTawkGameChat(gameTitle);
+    } else if (window?.Tawk_API?.maximize) {
+      window.Tawk_API.maximize();
+    }
+  };
+
   return (
     <section id="games" className="py-16 md:py-24 bg-slate-950">
       <div className="container mx-auto px-6">
@@ -30,31 +42,20 @@ const Games = () => {
           <p className="mx-auto mt-4 max-w-2xl text-sm md:text-base text-slate-400">High-energy games designed for serious players and fast competition.</p>
         </div>
 
-        {/* Mobile: Horizontal Scroll Carousel */}
-        <div className="relative block md:hidden pb-4">
-          <button onClick={() => carouselRef.current?.scrollBy({ left: -280, behavior: 'smooth' })} className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-700/60 bg-slate-950/90 text-cyan-300 shadow-[0_0_20px_rgba(56,189,248,0.25)] transition hover:bg-slate-900/95">
-            ‹
-          </button>
-          <button onClick={() => carouselRef.current?.scrollBy({ left: 280, behavior: 'smooth' })} className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-700/60 bg-slate-950/90 text-cyan-300 shadow-[0_0_20px_rgba(56,189,248,0.25)] transition hover:bg-slate-900/95">
-            ›
-          </button>
-          <div ref={carouselRef} className="overflow-x-auto scrollbar-hide scroll-smooth px-3 py-2">
-            <div className="flex gap-4 pb-2">
-              {games.map((game, index) => (
-                <div key={index} className="flex-shrink-0 min-w-[17rem] group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl shadow-slate-950/40 transition-transform duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                  <img src={game.img} alt={game.title} className="h-40 w-full object-cover" />
-                  <div className="p-4 relative">
-                    <span className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-1 text-xs uppercase tracking-[0.2em] text-cyan-300">{game.tag}</span>
-                    <h3 className="mt-3 text-lg font-semibold text-white truncate">{game.title}</h3>
-                    <p className="mt-2 text-xs text-slate-400 line-clamp-2">{game.desc}</p>
-                    <button className="mt-4 w-full rounded-full bg-cyan-500 px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-950 transition hover:bg-cyan-400">Play Now</button>
-                  </div>
-                </div>
-              ))}
+        {/* Mobile: 2 Column Vertical Grid */}
+        <div className="grid md:hidden grid-cols-2 gap-4">
+          {games.map((game, index) => (
+            <div key={index} className="group relative overflow-hidden rounded-xl border border-slate-800 bg-slate-900/90 shadow-2xl shadow-slate-950/40 transition-transform duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <img src={game.img} alt={game.title} className="h-32 w-full object-cover" />
+              <div className="p-3 relative">
+                <span className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-xs uppercase tracking-[0.2em] text-cyan-300">{game.tag}</span>
+                <h3 className="mt-2 text-sm font-semibold text-white truncate">{game.title}</h3>
+                <p className="mt-1 text-xs text-slate-400 line-clamp-1">{game.desc}</p>
+                <button onClick={() => openTawkGameChat(game.title)} type="button" className="mt-3 w-full rounded-full bg-cyan-500 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-950 transition hover:bg-cyan-400">Play Now</button>
+              </div>
             </div>
-          </div>
-          <p className="mt-3 text-center text-xs text-slate-400">👉 Use the arrows to browse cards</p>
+          ))}
         </div>
 
         {/* Desktop: Grid */}
@@ -67,7 +68,7 @@ const Games = () => {
                 <span className="inline-flex rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs uppercase tracking-[0.28em] text-cyan-300">{game.tag}</span>
                 <h3 className="mt-4 text-2xl font-semibold text-white">{game.title}</h3>
                 <p className="mt-3 text-slate-400">{game.desc}</p>
-                <button className="mt-6 inline-flex items-center rounded-full bg-cyan-500 px-5 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-950 transition hover:bg-cyan-400">Play Now</button>
+                <button onClick={() => openTawkGameChat(game.title)} type="button" className="mt-6 inline-flex items-center rounded-full bg-cyan-500 px-5 py-2 text-sm font-semibold uppercase tracking-[0.16em] text-slate-950 transition hover:bg-cyan-400">Play Now</button>
               </div>
             </div>
           ))}

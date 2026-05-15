@@ -1,6 +1,31 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const Header = ({ currentUser, onOpenLogin, onOpenSignup, onLogout }) => {
+const Header = ({ currentUser, onOpenLogin, onOpenSignup, onLogout, onOpenProfile }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleProfileClick = () => {
+    onOpenProfile();
+    setDropdownOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    onLogout();
+    setDropdownOpen(false);
+  };
+
   return (
     <header className="bg-slate-950/95 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-xl shadow-[0_24px_120px_-70px_rgba(0,0,0,0.8)]">
       <nav className="container mx-auto flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
@@ -13,10 +38,32 @@ const Header = ({ currentUser, onOpenLogin, onOpenSignup, onLogout }) => {
           <a href="#games" className="rounded-full px-4 py-2 text-sm font-medium transition hover:bg-slate-800/90 hover:text-white">Games</a>
           <a href="#offers" className="rounded-full px-4 py-2 text-sm font-medium transition hover:bg-slate-800/90 hover:text-white">Offers</a>
           {currentUser ? (
-            <>
-              <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">{currentUser.displayName || currentUser.email}</span>
-              <button onClick={onLogout} className="rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-rose-400">Logout</button>
-            </>
+            <div ref={dropdownRef} className="relative">
+              <button 
+                onClick={() => setDropdownOpen(!dropdownOpen)} 
+                className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-medium text-cyan-300 transition hover:bg-cyan-500/20 flex items-center gap-2"
+              >
+                {currentUser.displayName || currentUser.email}
+                <span className={`transition ${dropdownOpen ? 'rotate-180' : ''}`}>▼</span>
+              </button>
+              
+              {dropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-2xl border border-slate-800 bg-slate-900/95 shadow-xl backdrop-blur-xl overflow-hidden">
+                  <button 
+                    onClick={handleProfileClick}
+                    className="w-full px-4 py-3 text-sm font-medium text-left text-cyan-300 hover:bg-cyan-500/20 transition border-b border-slate-800"
+                  >
+                    👤 View Profile
+                  </button>
+                  <button 
+                    onClick={handleLogoutClick}
+                    className="w-full px-4 py-3 text-sm font-medium text-left text-rose-400 hover:bg-rose-500/20 transition"
+                  >
+                    🚪 Logout
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <button onClick={onOpenLogin} className="rounded-full border border-cyan-500 bg-slate-900 px-5 py-2 text-sm font-semibold text-cyan-300 transition hover:bg-cyan-500/10">Login</button>
